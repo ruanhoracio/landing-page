@@ -222,7 +222,7 @@
 
     /* ---------- Trabalhos: carrossel ---------- */
     .work { padding-top: clamp(40px, 6vw, 80px); }
-    .carousel { margin-top: 56px; }
+    .carousel { margin-top: 28px; }
     .rail {
       display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
       padding: 8px var(--gutter) 24px; scroll-padding-inline: var(--gutter);
@@ -259,6 +259,37 @@
     .card .plus svg { width: 10px; height: 10px; fill: currentColor; margin-left: 1px; }
     .card:hover .plus { background: var(--lime); border-color: var(--lime); color: var(--lime-ink); }
     .card .tag { position: absolute; top: 12px; left: 12px; z-index: 2; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; background: rgba(0,0,0,.55); color: var(--sage); }
+
+    /* Vídeos horizontais: imagem 16:9 no topo e título embaixo */
+    .card.wide { width: min(84vw, 520px); aspect-ratio: auto; height: calc(clamp(220px, 22vw, 262px) * 16 / 9); display: flex; flex-direction: column; background: #0b0f09; }
+    .card.wide::after { display: none; }
+    .card.wide img { position: relative; height: auto; aspect-ratio: 16 / 9; flex: none; }
+    .card.wide video { inset: 0 0 auto 0; height: auto; aspect-ratio: 16 / 9; }
+    .card.wide:hover img { transform: none; }
+    .card.wide .label { position: static; padding: 20px 18px; align-items: flex-start; font-size: 17px; letter-spacing: -.015em; line-height: 1.25; }
+    .card.wide .plus { margin-top: 2px; }
+    .card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
+    .card video.playing { opacity: 1; }
+    .card .label small { display: block; font-size: 11px; font-weight: 500; color: var(--sage); margin-bottom: 3px; letter-spacing: .02em; }
+
+    .tabs {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin: 40px auto 0; padding: 0 var(--gutter); max-width: var(--wrap);
+    }
+    .tab {
+      min-height: 40px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--line-2); background: rgba(255,255,255,.02);
+      font-size: 13px; font-weight: 500; color: var(--sage);
+      transition: background .25s, color .25s, border-color .25s;
+    }
+    .tab:hover { color: var(--ink); border-color: rgba(201, 242, 77, .45); }
+    .tab[aria-selected="true"] { background: var(--lime); border-color: var(--lime); color: var(--lime-ink); }
+    .tab span { opacity: .6; margin-left: 4px; font-weight: 400; }
+    @media (max-width: 640px) {
+      .tabs { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab { flex: none; }
+    }
 
     .rail-nav { display: flex; justify-content: center; gap: 10px; margin-top: 8px; }
     .arrow { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.04); border: 1px solid var(--line-2); cursor: pointer; transition: background .25s, color .25s, border-color .25s; }
@@ -332,7 +363,8 @@
     .modal.open { opacity: 1; visibility: visible; }
     .modal-box { position: relative; height: min(86vh, 820px); aspect-ratio: 9 / 16; max-width: 100%; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid var(--line-2); box-shadow: 0 0 80px rgba(150, 228, 60, .18); transform: scale(.96); transition: transform .4s var(--ease); }
     .modal.open .modal-box { transform: none; }
-    .modal iframe { width: 100%; height: 100%; border: 0; }
+    .modal-box.wide { height: auto; width: min(92vw, 1180px); aspect-ratio: 16 / 9; }
+    .modal iframe, .modal video { display: block; width: 100%; height: 100%; border: 0; background: #000; }
     .modal-close { position: absolute; top: 18px; right: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255,255,255,.06); cursor: pointer; font-size: 22px; line-height: 1; }
     .modal-close:hover { background: var(--lime); color: var(--lime-ink); }
 
@@ -466,24 +498,14 @@
     <section class="section work" id="trabalhos">
       <div class="wrap section-head">
         <h2 class="h2 reveal">Trabalhos que <em>prendem</em></h2>
-        <p class="lead reveal" style="--d:.1s">Uma seleção de vídeos que editei para criadores <em>e marcas do digital.</em></p>
+        <p class="lead reveal" style="--d:.1s">Uma seleção do que editei para criadores, marcas e empresas, <em>no Brasil e lá fora.</em></p>
       </div>
 
+      <div class="tabs reveal" style="--d:.12s" role="tablist" aria-label="Categorias" id="tabs"></div>
+
       <div class="carousel reveal" style="--d:.15s">
-        <div class="rail" id="rail">
-          <article class="info-card">
-            <span class="badge"><svg viewBox="0 0 593.64 536.77"><use href="#logo"/></svg></span>
-            <h3>Shorts &amp; Reels</h3>
-            <p>Vídeos para Instagram, TikTok e YouTube, feitos para quem vive do digital.</p>
-            <div class="stats">
-              <div><b id="count">11</b><span>Projetos selecionados</span></div>
-              <div><b>7</b><span>Anos editando vídeos</span></div>
-              <div><b>IA</b><span>Na produção, pra entregar mais</span></div>
-              <div><b>1:1</b><span>Atendimento direto comigo</span></div>
-            </div>
-          </article>
-          <!-- Os cards de vídeo são gerados a partir da lista VIDEOS no script -->
-        </div>
+        <!-- Info card e cards de vídeo são gerados a partir de CATEGORIES no script -->
+        <div class="rail" id="rail" role="tabpanel"></div>
         <div class="rail-nav">
           <button class="arrow" data-dir="-1" aria-label="Vídeos anteriores"><svg viewBox="0 0 24 24"><use href="#arrow-l"/></svg></button>
           <button class="arrow" data-dir="1" aria-label="Próximos vídeos"><svg viewBox="0 0 24 24"><use href="#arrow-r"/></svg></button>
@@ -568,23 +590,94 @@
   <!-- Modal de vídeo -->
   <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-label="Player de vídeo">
     <button class="modal-close" id="modalClose" aria-label="Fechar vídeo">&times;</button>
-    <div class="modal-box"><iframe id="modalFrame" title="Vídeo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="modal-box" id="modalBox"></div>
   </div>
 
   <script>
-    // Para adicionar um vídeo: inclua { id: "ID_DO_YOUTUBE", title: "Nome" } nesta lista.
-    const VIDEOS = [
-      { id: "4IMOQHw7k1Y", title: "Geraldo Rufino" },
-      { id: "VVhM9_0iACE", title: "Anderson Águia" },
-      { id: "gqDORCN_Ge0", title: "Lucas Orlandi" },
-      { id: "AHd6ppHJOsY", title: "Theodora" },
-      { id: "-ik1LsAn7sE", title: "Casimiro" },
-      { id: "IR-CmWV1Ivg", title: "Nikolas Ferreira" },
-      { id: "Slp0-uYVLwI", title: "Dr. Karol — Menopausa" },
-      { id: "YG6gCPCcAAI", title: "Viviane Martinello — Casa de Isabel" },
-      { id: "PVcPFBXG8jo", title: "Vitória Martinello" },
-      { id: "lB-qhMexCP0", title: "Tiago Tessmann — Motion" },
-      { id: "6E5Ihw3RFl0", title: "Não existe cristão com o nome sujo" }
+    // Portfólio por categoria. Cada vídeo é do YouTube ({ yt: "ID" }) ou um arquivo
+    // da pasta videos/ ({ file: "nome" } → videos/nome.mp4 + posters/nome.jpg).
+    // wide: true para vídeos horizontais (16:9).
+    const CATEGORIES = [
+      {
+        key: "criadores", label: "Criadores",
+        title: "Criadores & infoprodutos", text: "Shorts e Reels para quem vive de conteúdo no Instagram, TikTok e YouTube.",
+        items: [
+          { yt: "4IMOQHw7k1Y", title: "Geraldo Rufino" },
+          { yt: "VVhM9_0iACE", title: "Anderson Águia" },
+          { yt: "gqDORCN_Ge0", title: "Lucas Orlandi" },
+          { yt: "AHd6ppHJOsY", title: "Theodora" },
+          { yt: "-ik1LsAn7sE", title: "Casimiro" },
+          { yt: "IR-CmWV1Ivg", title: "Nikolas Ferreira" },
+          { yt: "Slp0-uYVLwI", title: "Menopausa", client: "Dr. Karol" },
+          { yt: "YG6gCPCcAAI", title: "Casa de Isabel", client: "Viviane Martinello" },
+          { yt: "PVcPFBXG8jo", title: "Vitória Martinello" },
+          { yt: "lB-qhMexCP0", title: "Motion", client: "Tiago Tessmann" },
+          { yt: "6E5Ihw3RFl0", title: "Não existe cristão com o nome sujo" }
+        ]
+      },
+      {
+        key: "marcas", label: "Marcas & empresas",
+        title: "Marcas & empresas", text: "Conteúdo e anúncios para empresas de indústria, varejo, construção e comércio exterior.",
+        items: [
+          { file: "marca-fluair-suspense", title: "Suspense", client: "Fluair" },
+          { file: "marca-citycomex-carga", title: "Carga parada", client: "City Comex" },
+          { file: "marca-ferreira-feirao", title: "Você vai se arrepender", client: "Ferreira Telhas" },
+          { file: "marca-compac-avant", title: "Série Avant", client: "Compac" },
+          { file: "marca-concept-painel", title: "Painel ripado", client: "Concept House" },
+          { file: "marca-citycomex-fornecedor", title: "Você achou fornecedor", client: "City Comex" },
+          { file: "marca-acessar-reserva", title: "Reserva do Leste", client: "Acessar Engenharia" },
+          { file: "marca-fluair-depoimento", title: "Depoimento Trudel Implementos", client: "Fluair" },
+          { file: "marca-ferreira-porcelanato", title: "Porcelanato comercial", client: "Ferreira Telhas" },
+          { file: "marca-higor-assistencia", title: "Assistência", client: "Higor Robetti" }
+        ]
+      },
+      {
+        key: "cafes", label: "Cafés · Los Angeles",
+        title: "Cafés em Los Angeles", text: "Conteúdo mensal para quatro cafeterias de Los Angeles: Bada, Jetty, Nook e Punch Bowl.",
+        items: [
+          { file: "cafe-punch-opening", title: "Grand Opening Recap", client: "Punch Bowl Coffee" },
+          { file: "cafe-jetty-line", title: "Worth the Line", client: "Jetty Coffee" },
+          { file: "cafe-bada-recap", title: "Recap", client: "Bada Coffee" },
+          { file: "cafe-nook-home", title: "Where Are You Home", client: "Nook Coffee" },
+          { file: "cafe-jetty-rush", title: "Morning Rush", client: "Jetty Coffee" },
+          { file: "cafe-bada-sign", title: "If You Need a Sign", client: "Bada Coffee" },
+          { file: "cafe-punch-green", title: "Green Build", client: "Punch Bowl Coffee" },
+          { file: "cafe-nook-sounds", title: "Sounds of Nook", client: "Nook Coffee" }
+        ]
+      },
+      {
+        key: "ia", label: "Feito com IA",
+        title: "Feito com IA", text: "Narração e cenas geradas com IA, editadas para manter a qualidade e produzir mais rápido.",
+        items: [
+          { file: "ia-acessar-narrado", title: "Vídeo narrado por IA", client: "Acessar Engenharia" },
+          { file: "ia-acessarmidia-narracao", title: "Narração com IA", client: "Acessar Mídia" },
+          { file: "ia-bb-habitese", title: "Habite-se, o documento que faltou", client: "B&B" }
+        ]
+      },
+      {
+        key: "youtube", label: "YouTube",
+        title: "YouTube · Tiago Tessmann", text: "Vídeos longos para o canal do Tiago Tessmann sobre marketing e anúncios online.",
+        items: [
+          { yt: "37VskkHJCNg", title: "O Google que você conhece está acabando", client: "Tiago Tessmann", wide: true },
+          { yt: "TPSisw5TZHM", title: "Simples Nacional 2027: a decisão que vence em 30 de outubro", client: "Tiago Tessmann", wide: true },
+          { yt: "i4eXtWpDZpA", title: "AI Max: a configuração do Google Ads que eu desligo na hora", client: "Tiago Tessmann", wide: true },
+          { yt: "O5xwvclrnGU", title: "Seu anúncio no Instagram ficou 12% mais caro (e o painel não mostra)", client: "Tiago Tessmann", wide: true },
+          { yt: "6UWDBeS8tEY", title: "Quanto custa anunciar no Google e no Instagram em 2026", client: "Tiago Tessmann", wide: true },
+          { yt: "DzEMGvbq0SU", title: "O fim das bets vai baratear o seu anúncio", client: "Tiago Tessmann", wide: true },
+          { yt: "ocW_2KpmG4s", title: "O ChatGPT começou a vender anúncio. Vale a pena entrar agora?", client: "Tiago Tessmann", wide: true },
+          { yt: "gwqAsSX0iEE", title: "Pare de pagar pra receber curioso no WhatsApp", client: "Tiago Tessmann", wide: true },
+          { yt: "3D7gw96PcsQ", title: "Lula ou Bolsonaro: o que muda no bolso de quem tem empresa", client: "Tiago Tessmann", wide: true }
+        ]
+      },
+      {
+        key: "institucional", label: "Institucional",
+        title: "Institucional", text: "Vídeos horizontais para lideranças e instituições.",
+        items: [
+          { file: "inst-flavio-crise", title: "Crise de representatividade", client: "Flávio Roscoe", wide: true },
+          { file: "inst-flavio-respiradores", title: "Respiradores", client: "Flávio Roscoe", wide: true },
+          { file: "inst-flavio-acorda", title: "Se você acorda cedo", client: "Flávio Roscoe", wide: true }
+        ]
+      }
     ];
 
     // Faixa de clientes: [nome, estilo tipográfico, legenda opcional]
@@ -616,26 +709,74 @@
       track.innerHTML = clientsHTML(track.dataset.clients === "people" ? PEOPLE : BRANDS);
     });
 
-    // Cards de vídeo
+    // Abas de categoria + carrossel
     const rail = document.getElementById("rail");
-    rail.insertAdjacentHTML("beforeend", VIDEOS.map(v => `
-      <button class="card" data-video="${v.id}" aria-label="Assistir ${v.title}">
-        <img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy">
-        <span class="tag">Reels</span>
-        <span class="label"><span class="plus"><svg viewBox="0 0 24 24"><use href="#play"/></svg></span>${v.title}</span>
-      </button>`).join(""));
-    document.getElementById("count").textContent = VIDEOS.length;
+    const tabs = document.getElementById("tabs");
+    const total = CATEGORIES.reduce((n, c) => n + c.items.length, 0);
+
+    tabs.innerHTML = CATEGORIES.map((c, i) =>
+      `<button class="tab" role="tab" data-cat="${c.key}" aria-selected="${i === 0}">${c.label}<span>${c.items.length}</span></button>`).join("");
+
+    function cardHTML(v) {
+      const poster = v.yt ? `https://i.ytimg.com/vi/${v.yt}/hqdefault.jpg` : `posters/${v.file}.jpg`;
+      const data = (v.yt ? `data-video="${v.yt}"` : `data-file="${v.file}"`) + (v.wide ? " data-wide" : "");
+      const tag = v.yt && v.wide ? "YouTube" : v.wide ? "Horizontal" : "Reels";
+      const preview = v.file ? `<video muted loop playsinline preload="none" data-preview="videos/${v.file}.mp4"></video>` : "";
+      return `
+        <button class="card${v.wide ? " wide" : ""}" ${data} aria-label="Assistir ${v.client ? v.client + " — " : ""}${v.title}">
+          <img src="${poster}" alt="" loading="lazy">${preview}
+          <span class="tag">${tag}</span>
+          <span class="label"><span class="plus"><svg viewBox="0 0 24 24"><use href="#play"/></svg></span><span>${v.client ? `<small>${v.client}</small>` : ""}${v.title}</span></span>
+        </button>`;
+    }
+
+    function showCategory(key) {
+      const cat = CATEGORIES.find(c => c.key === key);
+      tabs.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.cat === key));
+      rail.innerHTML = `
+        <article class="info-card">
+          <span class="badge"><svg viewBox="0 0 593.64 536.77"><use href="#logo"/></svg></span>
+          <h3>${cat.title}</h3>
+          <p>${cat.text}</p>
+          <div class="stats">
+            <div><b>${cat.items.length}</b><span>Vídeos nesta categoria</span></div>
+            <div><b>${total}</b><span>No portfólio completo</span></div>
+            <div><b>7</b><span>Anos editando vídeos</span></div>
+            <div><b>IA</b><span>Na produção, pra entregar mais</span></div>
+          </div>
+        </article>` + cat.items.map(cardHTML).join("");
+      rail.scrollTo({ left: 0 });
+    }
+    tabs.addEventListener("click", e => { const t = e.target.closest(".tab"); if (t) showCategory(t.dataset.cat); });
+    showCategory(CATEGORIES[0].key);
+
+    // Prévia sem som ao passar o mouse (só em telas com mouse)
+    if (matchMedia("(hover: hover)").matches) {
+      rail.addEventListener("mouseover", e => {
+        const v = e.target.closest(".card")?.querySelector("video");
+        if (!v || v.classList.contains("playing")) return;
+        if (!v.src) v.src = v.dataset.preview;
+        v.play().then(() => v.classList.add("playing")).catch(() => {});
+      });
+      rail.addEventListener("mouseout", e => {
+        const card = e.target.closest(".card");
+        if (!card || card.contains(e.relatedTarget)) return;
+        const v = card.querySelector("video");
+        if (v) { v.pause(); v.classList.remove("playing"); }
+      });
+    }
 
     document.querySelectorAll(".arrow").forEach(btn => btn.addEventListener("click", () => {
       const step = rail.querySelector(".card").offsetWidth + 16;
       rail.scrollBy({ left: step * 2 * Number(btn.dataset.dir), behavior: "smooth" });
     }));
 
-    // Modal do YouTube
+    // Modal: YouTube ou arquivo próprio
     const modal = document.getElementById("modal");
-    const frame = document.getElementById("modalFrame");
-    function openVideo(id) {
-      frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+    const modalBox = document.getElementById("modalBox");
+    function openModal(html, wide) {
+      modalBox.innerHTML = html;
+      modalBox.classList.toggle("wide", !!wide);
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -643,12 +784,14 @@
     function closeVideo() {
       modal.classList.remove("open");
       modal.setAttribute("aria-hidden", "true");
-      frame.src = "";
+      modalBox.innerHTML = "";
       document.body.style.overflow = "";
     }
     document.addEventListener("click", e => {
-      const target = e.target.closest("[data-video]");
-      if (target) openVideo(target.dataset.video);
+      const yt = e.target.closest("[data-video]");
+      if (yt) return openModal(`<iframe title="Vídeo" src="https://www.youtube.com/embed/${yt.dataset.video}?autoplay=1&rel=0&playsinline=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`, yt.hasAttribute("data-wide"));
+      const file = e.target.closest("[data-file]");
+      if (file) openModal(`<video src="videos/${file.dataset.file}.mp4" poster="posters/${file.dataset.file}.jpg" controls autoplay playsinline></video>`, file.hasAttribute("data-wide"));
     });
     document.getElementById("modalClose").addEventListener("click", closeVideo);
     modal.addEventListener("click", e => { if (e.target === modal) closeVideo(); });
